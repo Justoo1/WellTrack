@@ -1,7 +1,7 @@
 import { NextApiRequest, NextApiResponse } from 'next';
 import ExcelJS from 'exceljs';
-import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
-import { ChartConfiguration } from 'chart.js';
+// import { ChartJSNodeCanvas } from 'chartjs-node-canvas';
+// import { ChartConfiguration } from 'chart.js';
 import fs from 'fs';
 import path from 'path';
 
@@ -15,28 +15,28 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     }
 
     // Example: Pie chart creation using chartjs-node-canvas
-    const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 800, height: 600 });
-    const chartConfig: ChartConfiguration<'pie'> = {
-      type: 'pie',
-      data: {
-        labels: ['Total Contributions', 'Total Expenses'],
-        datasets: [
-          {
-            data: [financialData.totalContribution, financialData.totalExpenses],
-            backgroundColor: ['#36A2EB', '#FF6384'],
-          },
-        ],
-      },
-      options: {
-        responsive: true,
-        plugins: {
-          legend: { position: 'right' },
-          title: { display: true, text: 'Total Contributions vs Total Expenses' },
-        },
-      },
-    };
+    // const chartJSNodeCanvas = new ChartJSNodeCanvas({ width: 800, height: 600 });
+    // const chartConfig: ChartConfiguration<'pie'> = {
+    //   type: 'pie',
+    //   data: {
+    //     labels: ['Total Contributions', 'Total Expenses'],
+    //     datasets: [
+    //       {
+    //         data: [financialData.totalContribution, financialData.totalExpenses],
+    //         backgroundColor: ['#36A2EB', '#FF6384'],
+    //       },
+    //     ],
+    //   },
+    //   options: {
+    //     responsive: true,
+    //     plugins: {
+    //       legend: { position: 'right' },
+    //       title: { display: true, text: 'Total Contributions vs Total Expenses' },
+    //     },
+    //   },
+    // };
 
-    const chartBuffer = await chartJSNodeCanvas.renderToBuffer(chartConfig);
+    // const chartBuffer = await chartJSNodeCanvas.renderToBuffer(chartConfig);
 
     // Create Excel workbook
     const workbook = new ExcelJS.Workbook();

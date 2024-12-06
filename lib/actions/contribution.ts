@@ -126,53 +126,95 @@ export async function fetchContribution(contributionId: string) {
 
 
 // Define the response structure
-interface AnalyticsResponse {
-  success: boolean;
-  monthlyContributions: { month: string; amount: number }[];
-  incomeVsExpenses: { month: string; income: number; expenses: number }[];
-  error?: string;
-}
+// interface AnalyticsResponse {
+//   success: boolean;
+//   monthlyContributions: { month: string; amount: number }[];
+//   incomeVsExpenses: { month: string; income: number; expenses: number }[];
+//   error?: string;
+// }
 
-export async function IncomeVsExpense(): Promise<AnalyticsResponse> {
+export async function IncomeVsExpense(): Promise<{
+  success: boolean;
+  monthlyContributions: Array<{ month: string; year: number; amount: number }>;
+  incomeVsExpenses: Array<{ month: string; year: number; income: number; expenses: number }>;
+  error?: string;
+}> {
   try {
     // Fetch contributions and expenses from the database
     const contributions: Contribution[] = await prisma.contribution.findMany();
     const rawExpenses = await prisma.expense.findMany();
+    
     const expenses = rawExpenses.map((expense) => ExpenseSchema.parse({
       ...expense,
       description: expense.description ?? undefined, // Ensure compatibility
     }));
 
     // Initialize objects to accumulate totals
-    const contributionTotals: Record<string, number> = {};
-    const expenseTotals: Record<string, number> = {};
+    const contributionTotals: Record<string, { amount: number; year: number }> = {};
+    const expenseTotals: Record<string, { amount: number; year: number }> = {};
 
-    // Group contributions by month and sum the amounts
+    // Group contributions by month and year, sum the amounts
     contributions.forEach(({ month: date, amount }) => {
-      const month = new Date(date).toLocaleString('default', { month: 'short' });
-      contributionTotals[month] = (contributionTotals[month] || 0) + amount;
+      const monthDate = new Date(date);
+      const month = monthDate.toLocaleString('default', { month: 'short' });
+      const year = monthDate.getFullYear();
+      const key = `${month}-${year}`;
+
+      contributionTotals[key] = {
+        amount: (contributionTotals[key]?.amount || 0) + amount,
+        year
+      };
     });
 
-    // Group expenses by month and sum the amounts
+    // Group expenses by month and year, sum the amounts
     expenses.forEach(({ date, amount }) => {
-      const month = new Date(date).toLocaleString('default', { month: 'short' });
-      expenseTotals[month] = (expenseTotals[month] || 0) + amount;
+      const monthDate = new Date(date);
+      const month = monthDate.toLocaleString('default', { month: 'short' });
+      const year = monthDate.getFullYear();
+      const key = `${month}-${year}`;
+
+      expenseTotals[key] = {
+        amount: (expenseTotals[key]?.amount || 0) + amount,
+        year
+      };
     });
 
     // Generate analytics arrays
     const monthlyContributions = Object.entries(contributionTotals).map(
-      ([month, amount]) => ({ month, amount })
+      ([key, { amount, year }]) => {
+        const [month] = key.split('-');
+        return { month, year, amount };
+      }
     );
 
-    const incomeVsExpenses = Object.keys(contributionTotals).map((month) => ({
-      month,
-      income: contributionTotals[month] || 0,
-      expenses: expenseTotals[month] || 0,
-    }));
+    // Combine keys from contributions and expenses
+    const allKeys = new Set([
+      ...Object.keys(contributionTotals),
+      ...Object.keys(expenseTotals),
+    ]);
 
-    return { success: true, monthlyContributions, incomeVsExpenses };
+    const incomeVsExpenses = Array.from(allKeys).map((key) => {
+      const [month, year] = key.split('-');
+      return {
+        month,
+        year: parseInt(year),
+        income: contributionTotals[key]?.amount || 0,
+        expenses: expenseTotals[key]?.amount || 0,
+      };
+    });
+
+    return { 
+      success: true, 
+      monthlyContributions, 
+      incomeVsExpenses 
+    };
   } catch (error) {
     console.error('Contribution fetch error:', error);
-    return { success: false, error: 'Failed to fetch data', monthlyContributions: [], incomeVsExpenses: [] };
+    return { 
+      success: false, 
+      error: 'Failed to fetch data', 
+      monthlyContributions: [], 
+      incomeVsExpenses: [] 
+    };
   }
 }

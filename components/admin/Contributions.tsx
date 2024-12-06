@@ -85,7 +85,7 @@ const Contributions = ({contributions}: ContributionsProps) => {
                 <TableCell>{record.status}</TableCell>
                 <TableCell>
                     <Popover>
-                        <PopoverTrigger asChild>
+                        <PopoverTrigger asChild className='text-green-600'>
                         <Button asChild size='icon' className='bg-transparent hover:bg-green-600 cursor-pointer'>
                             <PenBoxIcon className="size-6 text-green-600 hover:text-white" />
                         </Button>

@@ -1,12 +1,14 @@
 'use client'
 
+import { useState, useEffect } from 'react'
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Bar, BarChart, Line, LineChart, ResponsiveContainer, XAxis, YAxis } from "recharts"
 import { ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
 import QuickActions from "./QuickActions"
 
-interface Contribution { month: string; amount: number }
-interface IncomeVsExpense { month: string; income: number; expenses: number }
+interface Contribution { month: string; amount: number; year: number }
+interface IncomeVsExpense { month: string; income: number; expenses: number; year: number }
 
 interface AnalyticsProp {
   incomeVsExpenses: IncomeVsExpense[]
@@ -14,12 +16,43 @@ interface AnalyticsProp {
 }
 
 const Analytics = ({ incomeVsExpenses, monthlyContributions }: AnalyticsProp) => {
+  const [selectedYear, setSelectedYear] = useState<number>(new Date().getFullYear())
+  const [filteredContributions, setFilteredContributions] = useState<Contribution[]>([])
+  const [filteredIncomeVsExpenses, setFilteredIncomeVsExpenses] = useState<IncomeVsExpense[]>([])
+
+  console.log("filteredIncomeVsExpenses", filteredIncomeVsExpenses)
+  console.log(incomeVsExpenses)
+
+  const years = Array.from(new Set([
+    ...monthlyContributions.map(c => c.year),
+    ...incomeVsExpenses.map(ie => ie.year)
+  ])).sort((a, b) => b - a)
+
+  useEffect(() => {
+    setFilteredContributions(monthlyContributions.filter(c => c.year === selectedYear))
+    setFilteredIncomeVsExpenses(incomeVsExpenses.filter(ie => ie.year === selectedYear))
+  }, [selectedYear, monthlyContributions, incomeVsExpenses])
+
   return (
     <main className="flex-1 overflow-x-hidden overflow-y-auto bg-gray-200 p-4 sm:p-6">
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="mb-4">
+        <Select onValueChange={(value) => setSelectedYear(Number(value))}>
+          <SelectTrigger className="w-[180px]">
+            <SelectValue placeholder="Select year" />
+          </SelectTrigger>
+          <SelectContent>
+            {years.map((year) => (
+              <SelectItem key={year} value={year.toString()}>
+                {year}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+      </div>
+      <div className="grid gap-4 grid-cols-1">
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Monthly Contributions</CardTitle>
+            <CardTitle>Monthly Contributions {selectedYear}</CardTitle>
             <CardDescription>Total contributions per month in cedis</CardDescription>
           </CardHeader>
           <CardContent>
@@ -33,7 +66,7 @@ const Analytics = ({ incomeVsExpenses, monthlyContributions }: AnalyticsProp) =>
               className="h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={monthlyContributions}>
+                <BarChart data={filteredContributions}>
                   <XAxis dataKey="month" />
                   <YAxis />
                   <ChartTooltip content={<ChartTooltipContent />} />
@@ -45,7 +78,7 @@ const Analytics = ({ incomeVsExpenses, monthlyContributions }: AnalyticsProp) =>
         </Card>
         <Card className="w-full">
           <CardHeader>
-            <CardTitle>Income vs Expenses</CardTitle>
+            <CardTitle>Income vs Expenses {selectedYear}</CardTitle>
             <CardDescription>Monthly comparison of income and expenses</CardDescription>
           </CardHeader>
           <CardContent>
@@ -63,7 +96,7 @@ const Analytics = ({ incomeVsExpenses, monthlyContributions }: AnalyticsProp) =>
               className="h-[300px]"
             >
               <ResponsiveContainer width="100%" height="100%">
-                <LineChart data={incomeVsExpenses}>
+                <LineChart data={filteredIncomeVsExpenses}>
                   <XAxis dataKey="month" />
                   <YAxis />
                   <ChartTooltip content={<ChartTooltipContent />} />
