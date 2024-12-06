@@ -19,7 +19,7 @@ const UserCard = ({ userData }: UserAnalysisProps ) => {
   return (
     <Card className={cn("relative aspect-[1.6/1] bg-transparent border-none overflow-hidden")}>
         <Image
-            src="/assets/images/debit-card.png"
+            src="/assets/images/debitcard.PNG"
             alt="Card Background"
             fill
             className="object-cover"
