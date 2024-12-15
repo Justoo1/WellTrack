@@ -3,15 +3,20 @@ import { z } from 'zod'
 // User Schema
 export const UserSchema = z.object({
   id: z.string().optional(),
-  clerkId: z.string(),
+  clerkId: z.string().optional(),
   email: z.string().email(),
   name: z.string().min(2, { message: "Name must be at least 2 characters" }),
-  department: z.string().min(1, { message: "Department is required" }),
-  role: z.enum(['EMPLOYEE', 'ADMIN']).default('EMPLOYEE')
+  department: z.string().optional(),
+  role: z.enum(['EMPLOYEE', 'ADMIN']).default('EMPLOYEE'),
+  password: z.string().min(8, { message: "Password must be at least 8 characters" }),
 })
-export type User = z.infer<typeof UserSchema>
+export type User = Omit<z.infer<typeof UserSchema>, "clerkId" | "password" | "department"> & {
+  clerkId?: string | null
+  department?: string | null
+  password: string | null
+}
 
-export type UserValues = z.infer<typeof UserSchema> & {
+export type UserValues = Omit<z.infer<typeof UserSchema>, 'password'> & {
   contributionsCount: number,
 eventsCount: number,
 expensesCount: number,
@@ -33,7 +38,7 @@ export type Contribution = z.infer<typeof ContributionSchema>
 
 // Event Schema
 export const EventSchema = z.object({
-  id: z.number().int().optional(),
+  id: z.string().optional(),
   userId: z.string(),
   type: z.enum(['BIRTHDAY', 'FUNERAL', 'CHILDBIRTH', 'MARRIAGE', 'OTHER']),
   title: z.string().min(2, { message: "Title must be at least 2 characters" }),
@@ -97,4 +102,25 @@ export const EventCreateSchema = z.object({
   description: z.string().optional(),
   location: z.string().optional(),
   status: z.enum(['ACTIVE', 'ARCHIVED']).default('ACTIVE')
+})
+
+export const loginSchema = z.object({
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  })
+})
+
+export const signupSchema = z.object({
+  name: z.string().min(2, {
+    message: "Name must be at least 2 characters.",
+  }),
+  email: z.string().email({
+    message: "Please enter a valid email address.",
+  }),
+  password: z.string().min(8, {
+    message: "Password must be at least 8 characters.",
+  }),
 })

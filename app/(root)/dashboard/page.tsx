@@ -1,16 +1,21 @@
 import UsercardDetail from '@/components/shared/UsercardDetail'
 import { fetchUserWithContributions } from '@/lib/actions/users.action'
-import { auth } from '@clerk/nextjs/server'
+// import { auth } from '@clerk/nextjs/server'
+import { auth } from "@/lib/auth"
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 
 const Dashboard = async () => {
-  const { userId } = await auth()
-
-  if(!userId) {
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+  
+  if(!session) {
     redirect('/sign-in')
   }
 
-  const userInfo = await fetchUserWithContributions(userId)
+
+  const userInfo = await fetchUserWithContributions(session.user.email)
   return (
     <div className="min-h-screen  ">
       {/* Main Content */}

@@ -2,19 +2,26 @@
 "use server"
 
 import prisma from '@/lib/prisma'
-import { auth } from '@clerk/nextjs/server'
+// import { auth } from '@clerk/nextjs/server'
+import { auth } from "@/lib/auth"
 import { revalidatePath } from 'next/cache'
 import { Contribution, ContributionCreateSchema, ExpenseSchema } from '../validation'
+import { headers } from 'next/headers'
+import { redirect } from 'next/navigation'
 
 
 export async function createContribution(values: Contribution) {
-  const { userId: adminId } = await auth()
-  
-  if (!adminId) {
-    return { error: 'Unauthorized' }
-  }
+  // const { userId: adminId } = await auth()
+
 
   try {
+    const session = await auth.api.getSession({
+      headers: await headers()
+    })
+
+    if(!session) {
+      return redirect('/sign-in')
+    }
 
     const validatedData = ContributionCreateSchema.parse(values)
 

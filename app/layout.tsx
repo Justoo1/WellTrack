@@ -1,10 +1,12 @@
 import type { Metadata } from "next";
-import {
-  ClerkProvider
-} from '@clerk/nextjs'
+// import {
+//   ClerkProvider
+// } from '@clerk/nextjs'
 import { Kodchasan } from "next/font/google";
 import { Toaster } from "@/components/ui/toaster"
 import "./globals.css";
+// import '@fullcalendar/common/main.css'
+// import '@fullcalendar/daygrid/main.css'
 
 const kodchasan = Kodchasan({ 
   subsets: ["latin"], 
@@ -26,40 +28,37 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider appearance={{
-      variables: {
-        colorBackground: "#10a07514",
-        colorPrimary: '#D23D0E',
-        colorText: '#fff'
+    // <ClerkProvider appearance={{
+    //   variables: {
+    //     colorBackground: "#10a07514",
+    //     colorPrimary: '#D23D0E',
+    //     colorText: '#fff'
         
         
-      },
-      elements: {
-        socialButtonsBlockButton:{
-          backgroundColor: '#fff'
-        }
-      },
-      layout: {
-        socialButtonsPlacement: 'bottom',
+    //   },
+    //   elements: {
+    //     socialButtonsBlockButton:{
+    //       backgroundColor: '#fff'
+    //     }
+    //   },
+    //   layout: {
+    //     socialButtonsPlacement: 'bottom',
         
-        // socialButtonsVariant: 'iconButton',
-        // termsPageUrl: 'https://clerk.com/terms'
-      }
+    //     // socialButtonsVariant: 'iconButton',
+    //     // termsPageUrl: 'https://clerk.com/terms'
+    //   }
       
-    }}>
+    // }}>
     <html lang="en">
       <body
         className={`${kodchasan.className} antialiased bg-bg-img bg-cover bg-black object-cover bg-center bg-blend-luminosity bg-no-repeat`}
       >
         <div className="bg-zinc-950/80 min-h-screen">
-          
           {children}
-
-         
         </div>
         <Toaster />
       </body>
     </html>
-    </ClerkProvider>
+    // </ClerkProvider>
   );
 }

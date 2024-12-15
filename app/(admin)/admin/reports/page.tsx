@@ -14,7 +14,7 @@ import QuickActions from '@/components/admin/QuickActions'
 import ExcelJS from 'exceljs'
 
 interface FinancialSummary {
-  contributions: { year: number; month: Date; _sum: { amount: number } }[];
+  contributions: { year: number; month: number; _sum: { amount: number } }[];
   expenses: { date: Date; _sum: { amount: number } }[];
   events: { type: string; year: number; month: number; _count: { id: number } }[];
   totalContribution: number;
@@ -31,6 +31,7 @@ export default function Reports() {
     async function fetchFinancialData() {
       if (startDate && endDate) {
         const data = await getFinancialSummary(startDate, endDate)
+        console.log("data", data)
         setFinancialData(data)
       }
     }
@@ -62,7 +63,7 @@ export default function Reports() {
   
     // Fill in financial data
     financialData.contributions.forEach((contribution) => {
-      const key = `${contribution.year}-${contribution.month.getMonth() + 1}`;
+      const key = `${contribution.year}-${contribution.month}`;
       if (monthMap.has(key)) {
         const monthData = monthMap.get(key);
         monthData['Total Contributions'] += contribution._sum.amount;

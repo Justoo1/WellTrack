@@ -1,18 +1,23 @@
-import { UserButton } from '@clerk/nextjs'
-import { auth } from '@clerk/nextjs/server'
+// import { UserButton } from '@clerk/nextjs'
 import { redirect } from 'next/navigation'
 import Link from 'next/link'
 import React from 'react'
 import { fetchUserWithContributions } from '@/lib/actions/users.action'
 import { Home } from 'lucide-react'
+import ProfileMenu from './ProfileMenu'
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
 
 export const Navbar = async () => {
-  const { userId } = await auth()
+  const session = await auth.api.getSession({
+      headers: await headers()
+  })
 
-  if (!userId){
-    redirect("/sign-in")
+  if(!session) {
+    return redirect('/sign-in')
   }
-  const userInfo = await fetchUserWithContributions(userId)
+
+  const userInfo = await fetchUserWithContributions(session.user.email)
 
   return (
     <header className='p-3 md:px-10 2xl:px-80 lg:py-6'>
@@ -38,7 +43,8 @@ export const Navbar = async () => {
            </span>
          </Link>
          )}
-          <UserButton />
+          {/* <UserButton /> */}
+          {userInfo.success && userInfo.user && <ProfileMenu user={userInfo.user} />}
         </div>
       </nav>
     </header>

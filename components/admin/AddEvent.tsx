@@ -94,6 +94,7 @@ const EventAdd = ({ update, event, userId }: EventAddProps) => {
             form.reset()
           }
           }else {
+            console.log(data)
             const result = await createEvent(data)
           
           if (result.error) {
@@ -105,7 +106,7 @@ const EventAdd = ({ update, event, userId }: EventAddProps) => {
           } else {
             toast({
               title: 'Success',
-              description: 'Contribution added successfully'
+              description: 'Event added successfully'
             })
             form.reset()
           }

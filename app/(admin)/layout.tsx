@@ -1,4 +1,4 @@
-import { Header } from '@/components/admin/Header'
+import Header from '@/components/admin/Header'
 import { Sidebar } from '@/components/admin/Sidebar'
 import type { Metadata } from 'next'
 

@@ -18,7 +18,7 @@ const manrope = Manrope({
   })
 
 interface Event {
-  id: number;
+  id: string;
   type: string;
   title: string;
   start: Date;

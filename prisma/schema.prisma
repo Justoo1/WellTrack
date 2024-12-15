@@ -1,6 +1,7 @@
+
 datasource db {
-  provider = "postgresql"
-  url      = env("DATABASE_URL")
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
   directUrl = env("DATABASE_URL_UNPOOLED")
 }
 
@@ -9,33 +10,38 @@ generator client {
 }
 
 model User {
-  id                String          @id @default(cuid())
-  clerkId           String          @unique
-  email             String          @unique
-  name              String
-  department        String
-  role              UserRole        @default(EMPLOYEE)
-  contributions     Contribution[]
-  events            Event[]
-  expenses         Expense[]
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
+  id            String         @id @default(cuid())
+  clerkId       String?         @unique
+  email         String         @unique
+  name          String
+  department    String?
+  password      String         @default("")
+  role          UserRole       @default(EMPLOYEE)
+  contributions Contribution[]
+  events        Event[]
+  expenses      Expense[]
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @default(now())
+
+  emailVerified Boolean
+  image         String?
+  sessions      Session[]
+  accounts      Account[]
 
   @@map("users")
 }
 
 model Contribution {
-  id                String          @id @default(cuid())
-  userId            String
-  user              User            @relation(fields: [userId], references: [id])
-  amount            Float
-  month             DateTime
-  year              Int
-  quarter           Int
-  status            ContributionStatus @default(PENDING)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
-  
+  id        String             @id @default(cuid())
+  userId    String
+  user      User               @relation(fields: [userId], references: [id])
+  amount    Float
+  month     DateTime
+  year      Int
+  quarter   Int
+  status    ContributionStatus @default(PENDING)
+  createdAt DateTime           @default(now())
+  updatedAt DateTime           @default(now())
   // Indexes for faster aggregation
   @@index([userId, year, month])
   @@index([year, quarter])
@@ -43,22 +49,21 @@ model Contribution {
 }
 
 model Event {
-  id                Int             @id @default(autoincrement())
-  userId            String
-  user              User            @relation(fields: [userId], references: [id])
-  type              EventType
-  title             String
-  start             DateTime
-  end               DateTime
-  year              Int
-  month             Int
-  quarter           Int
-  description       String?
-  location          String?
-  status            EventStatus     @default(ACTIVE)
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
-  
+  id          String         @id @default(cuid())
+  userId      String
+  user        User        @relation(fields: [userId], references: [id])
+  type        EventType
+  title       String
+  start       DateTime
+  end         DateTime
+  year        Int
+  month       Int
+  quarter     Int
+  description String?
+  location    String?
+  status      EventStatus @default(ACTIVE)
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @default(now())
   // Indexes for faster querying and aggregation
   @@index([type, year, month])
   @@index([year, quarter])
@@ -66,18 +71,18 @@ model Event {
 }
 
 model Expense {
-  id                Int             @id @default(autoincrement())
-  type             ExpenseType
-  amount           Float
-  date             DateTime
-  recipient        String
-  description      String?
-  approvedBy       String?         // Admin who approved the expense
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now())
-  status           ExpenseStatus   @default(APPROVED)
-  userId           String?         // Optional link to related user
-  user             User?           @relation(fields: [userId], references: [id])
+  id          Int           @id @default(autoincrement())
+  type        ExpenseType
+  amount      Float
+  date        DateTime
+  recipient   String
+  description String?
+  approvedBy  String? // Admin who approved the expense
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @default(now())
+  status      ExpenseStatus @default(APPROVED)
+  userId      String? // Optional link to related user
+  user        User?         @relation(fields: [userId], references: [id])
 }
 
 enum ExpenseType {
@@ -117,4 +122,49 @@ enum EventType {
 enum EventStatus {
   ACTIVE
   ARCHIVED
+}
+
+model Session {
+  id        String   @id
+  expiresAt DateTime
+  token     String
+  createdAt DateTime
+  updatedAt DateTime
+  ipAddress String?
+  userAgent String?
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([token])
+  @@map("session")
+}
+
+model Account {
+  id                    String    @id
+  accountId             String
+  providerId            String
+  userId                String
+  user                  User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  accessToken           String?
+  refreshToken          String?
+  idToken               String?
+  accessTokenExpiresAt  DateTime?
+  refreshTokenExpiresAt DateTime?
+  scope                 String?
+  password              String?
+  createdAt             DateTime
+  updatedAt             DateTime
+
+  @@map("account")
+}
+
+model Verification {
+  id         String    @id
+  identifier String
+  value      String
+  expiresAt  DateTime
+  createdAt  DateTime?
+  updatedAt  DateTime?
+
+  @@map("verification")
 }

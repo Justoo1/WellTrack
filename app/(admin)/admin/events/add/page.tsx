@@ -1,18 +1,25 @@
 import EventAdd from '@/components/admin/AddEvent'
 import QuickActions from '@/components/admin/QuickActions'
 import { fetchUser } from '@/lib/actions/users.action'
-import { auth } from '@clerk/nextjs/server'
+// import { auth } from '@clerk/nextjs/server'
+import { auth } from "@/lib/auth"
+import { headers } from 'next/headers'
 import { redirect } from 'next/navigation'
 import React from 'react'
 
 const AddEventPage = async () => {
-    const { userId } = await auth()
-    if(!userId) {
+    // const { userId } = await auth()
+    const session = await auth.api.getSession({
+      headers: await headers()
+    })
+
+    if(!session) {
         redirect('/sign-in')
     }
-    const data = await fetchUser(userId)
+    
+    const data = await fetchUser(session.user.email)
     if(!data.success ) {
-        redirect('/sign-in')
+        redirect('/admin')
     }
 
   return (

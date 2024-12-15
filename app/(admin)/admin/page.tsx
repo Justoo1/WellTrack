@@ -4,14 +4,21 @@ import { fetchContributions } from '@/lib/actions/contribution'
 import { fetchUpcomingEvents } from '@/lib/actions/events.actions'
 import { fetchExpenses } from '@/lib/actions/expenses'
 import { fetchMembers, fetchUserWithContributions } from '@/lib/actions/users.action'
-import { auth } from '@clerk/nextjs/server'
+// import { auth } from '@clerk/nextjs/server'
+import { auth } from "@/lib/auth"
 import { redirect } from 'next/navigation'
 import UserAnalysis from '@/components/admin/User-analysis'
 import QuickActions from "@/components/admin/QuickActions"
+import { headers } from "next/headers"
 
 const Dashboard = async () => {
-  const { userId } = await auth()
-  if (!userId){
+  // const { userId } = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
+  console.log(session)
+
+  if (!session){
     redirect('/')
   }
 
@@ -20,7 +27,7 @@ const Dashboard = async () => {
     fetchUpcomingEvents(),
     fetchExpenses(),
     fetchMembers(),
-    fetchUserWithContributions(userId),
+    fetchUserWithContributions(session.user.email),
   ])
 
   if (userData.user?.role !== "ADMIN"){

@@ -1,16 +1,16 @@
 import Events from "@/components/shared/Events";
-import { fetchAllEvents } from "@/lib/actions/events.actions";
+import { fetchAllEventsForCalendar } from "@/lib/actions/events.actions";
 
 const EventsPage = async () => {
-  const events = await fetchAllEvents()
+  const data = await fetchAllEventsForCalendar()
 
-  if (events.error) {
+  if (data.error) {
     return (
       <div>
-        <p>{events.error}</p>
+        <p>{data.error}</p>
       </div>
     )
-  }else if (!events.events) {
+  }else if (!data.events) {
     return (
       <div>
         <p>No events found</p>
@@ -18,10 +18,11 @@ const EventsPage = async () => {
     )
   }
 
+
   return (
     <div className="flex flex-col">
       {/* Main Content */}
-      <Events events={events.events}/>
+      <Events events={data.events}/>
     </div>
   )
 }

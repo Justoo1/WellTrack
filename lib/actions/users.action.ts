@@ -2,23 +2,27 @@
 
 import { revalidatePath } from 'next/cache'
 import prisma from '../prisma'
-import { auth } from '@clerk/nextjs/server'
 import { ContributionStatus } from '@prisma/client';
+import { auth } from "@/lib/auth"
+import { headers } from "next/headers"
+import { redirect } from 'next/navigation';
 
 
 // Server action to fetch a single user with their contributions and detailed analytics
 
-export async function fetchUserWithContributions(userId: string) {
+export async function fetchUserWithContributions(email: string) {
   try {
-    // Ensure current user is authenticated
-    const { userId: currentUserId } = await auth()
-    if (!currentUserId) {
-      throw new Error('User not authenticated')
+    const session = await auth.api.getSession({
+      headers: await headers()
+    })
+
+    if(!session) {
+      return redirect('/sign-in')
     }
 
     // Fetch user with their contributions
     const user = await prisma.user.findUnique({
-      where: { clerkId: userId },
+      where: { email: email },
       include: {
         contributions: {
           orderBy: {
@@ -189,9 +193,13 @@ export async function fetchUsers() {
 export async function fetchUsersIdAndName() {
     try {
       // Ensure user is authenticated
-      const { userId } = await auth()
-      if (!userId) {
-        throw new Error('User not authenticated')
+      // const { userId } = await auth()
+      const session = await auth.api.getSession({
+        headers: await headers()
+      })
+  
+      if(!session) {
+        return redirect('/sign-in')
       }
   
       // Fetch only id and name for all users
@@ -272,9 +280,9 @@ export async function fetchUsersIdAndName() {
     }
 }
 
-export async function fetchUser(userId: string) {
+export async function fetchUser(email: string) {
   try {
-    const user = await prisma.user.findUnique({ where: { clerkId: userId } })
+    const user = await prisma.user.findUnique({ where: { email: email } })
     if (!user) {
       return { error: 'User Not found' }
     }

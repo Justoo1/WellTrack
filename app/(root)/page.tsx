@@ -5,11 +5,12 @@ import { fetchContributions } from '@/lib/actions/contribution'
 import { fetchUpcomingEvents } from '@/lib/actions/events.actions'
 import { fetchUserWithContributions } from '@/lib/actions/users.action'
 import { cn } from '@/lib/utils'
-import { auth } from '@clerk/nextjs/server'
+import { auth } from "@/lib/auth"
 import { Manrope } from 'next/font/google'
 import Link from 'next/link'
 import { redirect } from 'next/navigation'
 import React from 'react'
+import { headers } from 'next/headers'
 
 const manrope = Manrope({ 
   subsets: ["latin"], 
@@ -17,13 +18,17 @@ const manrope = Manrope({
 })
 
 const Dashboard = async () => {
-  const { userId } = await auth()
+  const session = await auth.api.getSession({
+    headers: await headers()
+  })
 
-  if (!userId) {
+  if (!session) {
     redirect("/sign-in")
   }
 
-  const [contributions, userInfo, upcomingEvents] = await Promise.all([fetchContributions(), fetchUserWithContributions(userId), fetchUpcomingEvents()])
+  // TODO: check for email verification
+
+  const [contributions, userInfo, upcomingEvents] = await Promise.all([fetchContributions(), fetchUserWithContributions(session.user.email), fetchUpcomingEvents()])
 
   if (userInfo.error) {
     return (
