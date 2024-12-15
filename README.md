@@ -45,8 +45,8 @@ This system allows:
 ## Installation
 1. Clone the repository:
    ```bash
-   git clone <repository-url>
-   cd welltrack
+   git clone https://github.com/Justoo1/WellTrack.git
+   cd WellTrack
    ```
 2. Install dependencies:
    ```bash
