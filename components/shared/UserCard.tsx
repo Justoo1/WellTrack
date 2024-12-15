@@ -28,12 +28,12 @@ const UserCard = ({ userData }: UserAnalysisProps ) => {
             <div className="absolute right-2 top-2 md:right-14 lg:right-5 xl:right-14 md:top-8 lg:top-3 xl:top-8 z-20">
                 <div className="flex items-center justify-center gap-2 text-gray-50">
                     <div className="flex flex-col uppercase">
-                        <h1 className='text-4xl font-bold tracking-[0.18em]'>DAWF</h1>
-                        <p className='text-sm tracking-normal md:tracking-wide'>Devops Africa LTD <br /> Welfare Found</p>
+                        <h1 className='text-4xl font-bold'>WELLTRACK</h1>
+                        <p className='text-sm tracking-normal md:tracking-wide'>Employee Welfare and <br /> Event Tracking</p>
                     </div>
                     <Image
                         src="/assets/images/logo.png"
-                        alt="DAWF Logo"
+                        alt="WELLTRACK Logo"
                         width={400}
                         height={400}
                         className="object-contain size-20 md:size-24 lg:size-20 xl:size-24"

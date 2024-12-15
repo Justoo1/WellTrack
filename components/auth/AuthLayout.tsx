@@ -30,12 +30,12 @@ const AuthLayout = ({ children, description, secondaryDescription, teamImage, cl
       <div className={cn("hidden lg:flex lg:flex-col lg:justify-center overflow-y-auto space-y-8 leading-10")}>
         <div className="flex items-center gap-4">
           <div>
-            <h2 className="text-2xl lg:text-5xl tracking-widest font-bold text-white">DAWF</h2>
-            <p className="text-sm text-white">DEVOPS AFRICA LTD <br /> WELFARE FUND</p>
+            <h2 className="text-2xl lg:text-5xl tracking-wider font-bold text-white">WELLTRACK</h2>
+            <p className="text-sm text-white">EMPLOYEE WELFARE AND EVENT TRACKING</p>
           </div>
           <Image
                 src="/assets/images/logo.png"
-                alt="DAWF Logo"
+                alt="WELLTRACK Logo"
                 width={400}
                 height={400}
                 className="object-contain size-24"

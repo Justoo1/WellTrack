@@ -280,8 +280,8 @@ const EventAdd = ({ update, event, userId }: EventAddProps) => {
                   <Input 
                     type="number" 
                     {...field} 
-                    min={2020}
-                    max={new Date().getFullYear()}
+                    min={2024}
+                    
                   />
                 </FormControl>
                 <FormMessage />

@@ -96,7 +96,7 @@ export const EventCreateSchema = z.object({
   title: z.string().min(2, { message: "Title must be at least 2 characters" }),
   start: z.string(),
   end: z.string(),
-  year: z.number().int().min(2020, { message: "Year must be 2020 or later" }),
+  year: z.number().int().min(2024, { message: "Year must be 2020 or later" }),
   month: z.number().int().min(1, { message: "Month must be 1-12" }),
   quarter: z.number().int().min(1).max(4),
   description: z.string().optional(),

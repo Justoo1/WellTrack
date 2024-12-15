@@ -65,7 +65,7 @@ const Login = () => {
   return (
     <Card className="border-none bg-[#10A0748C] text-white">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign in to DAWF</CardTitle>
+        <CardTitle className="text-2xl">Sign in to WELLTRACK</CardTitle>
         <p className="text-white/90">Welcome back! Please sign in to continue</p>
       </CardHeader>
       <CardContent>

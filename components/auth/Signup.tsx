@@ -11,14 +11,14 @@ import { z } from "zod"
 import { signupSchema } from "@/lib/validation"
 import { useToast } from "@/hooks/use-toast"
 import { Loader } from "lucide-react"
-// import { useRouter } from "next/navigation"
+import { useRouter } from "next/navigation"
 import { authClient } from "@/lib/auth-client"
 
 
 
 const Signup = () => {
     const { toast } = useToast()
-    // const router = useRouter()
+    const router = useRouter()
 
     const form = useForm<z.infer<typeof signupSchema>>({
         resolver: zodResolver(signupSchema),
@@ -31,28 +31,6 @@ const Signup = () => {
     
       const onSubmit = async (values: z.infer<typeof signupSchema>) => {
         try {
-            // const response = await fetch("/api/users", {
-            //     method: "POST",
-            //     body: JSON.stringify(values),
-            // })
-
-            // const result = await response.json()
-            // console.log()
-            
-            // if (response.ok) {
-            //     toast({
-            //         title: "Success",
-            //         description: "Account created successfully",
-            //     })
-            //     router.replace("/login")
-            // }
-            // else if (result.error) {
-            //     toast({
-            //         title: "Error",
-            //         description: result.message,
-            //         variant: "destructive",
-            //     })
-            // }
             const {email, name, password} = values
             // eslint-disable-next-line @typescript-eslint/no-unused-vars
             const { data, error } = await authClient.signUp.email({
@@ -70,6 +48,7 @@ const Signup = () => {
                 // eslint-disable-next-line @typescript-eslint/no-unused-vars
                 onSuccess: (ctx) => { 
                   //redirect to the dashboard
+                  router.push("/sign-in")
                   form.reset();
                   // router.replace("/login")
                 }, 
@@ -93,7 +72,7 @@ const Signup = () => {
   return (
     <Card className="w-full max-w-md border-none bg-[#10A0748C] text-white overflow-y-auto max-h-full">
       <CardHeader>
-        <CardTitle className="text-2xl">Sign up for DAWF</CardTitle>
+        <CardTitle className="text-2xl">WELLTRACK</CardTitle>
         <p className="text-white/90">Create an account to get started</p>
       </CardHeader>
       <CardContent className="space-y-4">

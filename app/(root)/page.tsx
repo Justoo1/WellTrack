@@ -107,7 +107,7 @@ const Dashboard = async () => {
               </div>
             </div>
             <p className='text-sm text-left text-white'>
-                The Welfare team is dedicated to enhancing the overall well-being of members of the organization, thus, providing support and resources when and where necessary. This application provides each member access to various contributions made to the Welfare team and also the total amount accumulated by the Welfare team of DevOps Africa ltd.
+                The Welfare team is dedicated to enhancing the overall well-being of members of the organization, thus, providing support and resources when and where necessary. This application provides each member access to various contributions made to the Welfare team and also the total amount accumulated by the Welfare team of your organization.
               </p>
           </div>
         </div>
