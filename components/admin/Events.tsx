@@ -34,7 +34,7 @@ const AllEvents = ({ events }: Props) => {
   })
   
 
-  const handleDelete =  async (id: number | undefined) => {
+  const handleDelete =  async (id: string | undefined) => {
     if (!id) return
     const deleted = await deleteEvent(id)
     if (deleted.success) {

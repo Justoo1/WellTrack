@@ -12,7 +12,6 @@ import { useToast } from "@/hooks/use-toast"
 // import { authClient } from "@/lib/auth-client"
 
 type EnhancedUser = Omit<User, "password" | "clerkId" | "department"> & {
-  clerkId: string | null;
   department: string | null;
   contributionsCount: number;
   eventsCount: number;
