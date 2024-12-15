@@ -67,6 +67,12 @@ This system allows:
 5. Access the application:
    - Open [http://localhost:3000](http://localhost:3000) in your browser.
 
+6. Access the demo app here 
+   - ([Demo](https://welltrack.vercel.app/))
+   - You can create account but if you want to access the admin page then use the below account to login
+      - Email: demo@welltrack.com
+      - Passwrod: Demo@welltrack12
+
 ## How It Works
 ### Employees:
 1. **Sign Up/Sign In**: Create an account with basic credentials.
